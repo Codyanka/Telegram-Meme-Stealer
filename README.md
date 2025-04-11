@@ -20,7 +20,7 @@ A bot for automatically copying media content (memes) from Telegram channels to 
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/meme-stealer.git
+git clone https://github.com/Codyanka/meme-stealer.git
 cd meme-stealer
 ```
 
