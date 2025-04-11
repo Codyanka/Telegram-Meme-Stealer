@@ -71,14 +71,22 @@ async def copy_media_post(message, target_channel):
         if message_hash in copied_posts["post_hashes"]:
             logger.info(f"Post already copied (pre-send check), skipping: {message_hash[:30]}...")
             return False
-            
-        await client.send_message(target_channel, message)
-        logger.info(f"Copied media post to channel {target_channel}")
         
-        copied_posts["post_hashes"].append(message_hash)
-        await save_copied_posts(copied_posts)
-        
-        return True
+        if message.media:
+            if isinstance(message.media, MessageMediaPhoto):
+                await client.send_file(target_channel, message.media.photo)
+                logger.info(f"Copied photo to channel {target_channel}")
+            elif isinstance(message.media, MessageMediaDocument):
+                await client.send_file(target_channel, message.media.document)
+                logger.info(f"Copied document/video/gif to channel {target_channel}")
+            else:
+                await client.send_file(target_channel, message.media)
+                logger.info(f"Copied media to channel {target_channel}")
+                
+            copied_posts["post_hashes"].append(message_hash)
+            await save_copied_posts(copied_posts)
+            return True
+        return False
     except Exception as e:
         logger.error(f"Error copying post: {e}")
         return False
